@@ -1,15 +1,19 @@
-import { model } from 'mongoose';
-import { Schema } from 'mongoose';
+import { model } from 'mongoose'
+import { Schema } from 'mongoose'
 
 const reservationsSchema = new Schema({
-   user: [{
+   user: {
       type: Schema.Types.ObjectId,
       ref: 'Users'
-   }],
-   service: [{
+   },
+   service: {
       type: Schema.Types.ObjectId,
       ref: 'Services'
-   }],
+   },
+   nombre: {
+      type: String,
+      required: true
+   },
    fecha: {
       type: String,
       required: true
@@ -29,8 +33,8 @@ const reservationsSchema = new Schema({
    personas: {
       type: String,
       default: 1
-   },
-});
+   }
+})
 
-const Reservations = model('Reservations', reservationsSchema);
+const Reservations = model('Reservations', reservationsSchema)
 export default Reservations

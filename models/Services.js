@@ -1,5 +1,5 @@
-import { model } from 'mongoose';
-import { Schema } from 'mongoose';
+import { model } from 'mongoose'
+import { Schema } from 'mongoose'
 
 const servicesSchema = new Schema({
    titulo: {
@@ -8,12 +8,11 @@ const servicesSchema = new Schema({
       required: true
    },
    descripcion: {
-      type: Array,
-      default: [],
+      type: String,
       required: true
    },
    precio: {
-      type: String,
+      type: Number,
       required: true
    },
    duracion: {
@@ -24,7 +23,7 @@ const servicesSchema = new Schema({
       type: Number,
       default: null
    }
-});
+})
 
-const Services = model('Services', servicesSchema);
+const Services = model('Services', servicesSchema)
 export default Services
