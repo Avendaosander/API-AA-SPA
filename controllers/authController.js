@@ -15,17 +15,15 @@ export const register = async (req, res) => {
       
       user = new Users({username, email, password});
       await user.save();
-      console.log(user);
 
       const token = jwt.sign({id: user._id}, process.env.SECRETTK, {
          expiresIn: '30m'
       })
 
       return res.status(201).json({
-         token,
          user: {
+            token,
             username: user.username,
-            email: user.email,
             rol: user.rol
          }
       });
@@ -41,7 +39,6 @@ export const login = async (req, res) => {
    const { username, password } = req.body;
    try {
       let user = await Users.findOne({username});
-      // console.log('Aqui estoy')
       if (!user) return res.status(404).json({messageError: 'No existe este username'});
 
       if(!(await user.comparePassword(password))) return res.status(404).json({messageError: 'La contraseña no es correcta'});
@@ -52,11 +49,8 @@ export const login = async (req, res) => {
 
       return res.status(200).json({
          token,
-         user: {
-            username: user.username,
-            email: user.email,
-            rol: user.rol
-         }
+         username: user.username,
+         rol: user.rol
       });
    } catch (error) {
       return res.status(500).json({messageError: error.message});
