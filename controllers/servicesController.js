@@ -21,7 +21,16 @@ export const home = async (req, res) => { //✅
 
 export const reservations = async (req, res) => { //✅
    try {
+      const rol = req.user.rol
       const { userID } = req.params
+      if (rol === 'Admin') {
+         const reservations = await Reservations.find({ __v: 0 })
+            .populate(
+               { path: 'service', select: 'titulo precio duracion' }
+            )
+            .lean()
+         return res.status(200).json({ reservations })
+      }
       const reservations = await Reservations.find({ user: userID, __v: 0 })
          .populate(
             { path: 'service', select: 'titulo precio duracion' }
@@ -54,12 +63,12 @@ export const service = async (req, res) => { //✅
 
 export const createService = async (req, res) => { //✅
    try {
-      const { titulo, descripcion, precio, duracion } = req.body;
+      const { titulo, descripcion, precio, duracion, descuento } = req.body;
       
       let service = await Services.findOne({titulo: titulo});
       if (service) return res.status(404).json({messageError: 'Este titulo de servicio ya existe'})
       
-      service = new Services({ titulo, descripcion, precio, duracion });
+      service = new Services({ titulo, descripcion, precio, duracion, descuento });
       await service.save();
 
       return res.status(201).json({service});
@@ -91,10 +100,12 @@ export const deleteService = async (req, res) => { //✅
 
       if (!service) return res.status(404).json({messageError: 'Esta reservacion no fue encontrada'})
       
+      const deletedReservations = await Reservations.find({ service: serviceID });
+      const deletedTestimonials = await Testimonials.find({ service: serviceID });
       await Reservations.deleteMany({service: serviceID}, { multi: true })
       await Testimonials.deleteMany({service: serviceID}, { multi: true })
 
-      return res.status(200).json({service});
+      return res.status(200).json({service, deletedReservations, deletedTestimonials});
    } catch (error) {
       return res.status(500).json({messageError: error.message});
    }
@@ -185,7 +196,7 @@ export const deleteTestimony = async (req, res) => { //✅
 
       if (!testimony) return res.status(404).json({messageError: 'Este testimonio no fue encontrado'})
 
-      return res.status(204).send();
+      return res.status(200).json({testimony});
    } catch (error) {
       return res.status(500).json({messageError: error.message});
    }
