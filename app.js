@@ -1,6 +1,6 @@
 import express, { json, urlencoded } from 'express';
 import routerAuth from "./routes/routerAuth.js";
-import routerServices from "./routes/routerServices";
+import routerServices from "./routes/routerServices.js";
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 dotenv.config();
